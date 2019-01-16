@@ -28,40 +28,50 @@ using namespace sdbusplus::xyz::openbmc_project::Common::Error;
 std::string Version::getValue(const std::string& manifestFilePath,
                               std::string key)
 {
-    key = key + "=";
-    auto keySize = key.length();
-
-    if (manifestFilePath.empty())
-    {
-        log<level::ERR>("Error MANIFESTFilePath is empty");
-        elog<InvalidArgument>(
-            Argument::ARGUMENT_NAME("manifestFilePath"),
-            Argument::ARGUMENT_VALUE(manifestFilePath.c_str()));
-    }
-
     std::string value{};
     std::ifstream efile;
     std::string line;
     efile.exceptions(std::ifstream::failbit | std::ifstream::badbit |
                      std::ifstream::eofbit);
+    
+    key = key + "=";
+    auto keySize = key.length();
 
-    // Too many GCC bugs (53984, 66145) to do this the right way...
-    try
+    if (manifestFilePath.empty())
     {
-        efile.open(manifestFilePath);
-        while (getline(efile, line))
+        if(0 == strcmp(key, "KeyType"))
         {
-            if (line.compare(0, keySize, key) == 0)
-            {
-                value = line.substr(keySize);
-                break;
-            }
+            value = "OpenBMC";
         }
-        efile.close();
+        else if(0 == strcmp(key, "HashType"))
+        {
+            value = "RSA-SHA256";
+        }
+        //log<level::ERR>("Error MANIFESTFilePath is empty");
+        //elog<InvalidArgument>(
+        //    Argument::ARGUMENT_NAME("manifestFilePath"),
+        //    Argument::ARGUMENT_VALUE(manifestFilePath.c_str()));
     }
-    catch (const std::exception& e)
+    else
     {
-        log<level::ERR>("Error in reading MANIFEST file");
+        // Too many GCC bugs (53984, 66145) to do this the right way...
+        try
+        {
+            efile.open(manifestFilePath);
+            while (getline(efile, line))
+            {
+                if (line.compare(0, keySize, key) == 0)
+                {
+                    value = line.substr(keySize);
+                    break;
+                }
+            }
+            efile.close();
+        }
+        catch (const std::exception& e)
+        {
+            log<level::ERR>("Error in reading MANIFEST file");
+        }
     }
 
     return value;
