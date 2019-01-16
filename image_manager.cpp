@@ -61,7 +61,6 @@ int Manager::processImage(const std::string& tarFilePath)
 {
     std::string id;
     std::string version;
-    std::string purpose;
     if (!fs::is_regular_file(tarFilePath))
     {
         log<level::ERR>("Error tarball does not exist",
@@ -122,7 +121,7 @@ int Manager::processImage(const std::string& tarFilePath)
     if (!fs::is_regular_file(manifestPath))
     {
         version = "20190115";
-        purpose = Version::VersionPurpose::Unknown;
+        auto purpose = Version::VersionPurpose::Unknown;
         id = "switch";
        //log<level::ERR>("Error No manifest file",
        //               entry("FILENAME=%s", tarFilePath.c_str()));
@@ -140,7 +139,7 @@ int Manager::processImage(const std::string& tarFilePath)
             return -1;
         }
 
-        purpose = Version::VersionPurpose::Unknown;
+        auto purpose = Version::VersionPurpose::Unknown;
         try
         {
             purpose = Version::convertVersionPurposeFromString(purposeString);
