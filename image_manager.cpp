@@ -92,10 +92,10 @@ int Manager::processImage(const std::string& tarFilePath)
         execl("/bin/tar", "tar", "-xf", tarFilePath.c_str(), MANIFEST_FILE_NAME,
               "-C", tmpDirPath.c_str(), (char*)0);
         // execl only returns on fail
-        log<level::ERR>("Failed to execute extract manifest",
-                        entry("FILENAME=%s", tarFilePath.c_str()));
-        report<ManifestFileFailure>(ManifestFail::PATH(tarFilePath.c_str()));
-        return -1;
+        //log<level::ERR>("Failed to execute extract manifest",
+        //                entry("FILENAME=%s", tarFilePath.c_str()));
+        //report<ManifestFileFailure>(ManifestFail::PATH(tarFilePath.c_str()));
+        //return -1;
     }
     else if (pid > 0)
     {
@@ -115,46 +115,53 @@ int Manager::processImage(const std::string& tarFilePath)
         return -1;
     }
 
-    // Verify the manifest file
+    //Verify the manifest file
     if (!fs::is_regular_file(manifestPath))
     {
-        log<level::ERR>("Error No manifest file",
-                        entry("FILENAME=%s", tarFilePath.c_str()));
-        report<ManifestFileFailure>(ManifestFail::PATH(tarFilePath.c_str()));
-        return -1;
+        auto version = "20190115"
+        auto id = "switch"
+        auto purpose = Version::VersionPurpose::Unknown
+       //log<level::ERR>("Error No manifest file",
+       //               entry("FILENAME=%s", tarFilePath.c_str()));
+       //report<ManifestFileFailure>(ManifestFail::PATH(tarFilePath.c_str()));
+       //return -1;
     }
-
-    // Get version
-    auto version = Version::getValue(manifestPath.string(), "version");
-    if (version.empty())
+    else
     {
-        log<level::ERR>("Error unable to read version from manifest file");
-        report<ManifestFileFailure>(ManifestFail::PATH(tarFilePath.c_str()));
-        return -1;
-    }
+        // Get purpose
+        auto purposeString = Version::getValue(manifestPath.string(), "purpose");
+        if (purposeString.empty())
+        {
+            log<level::ERR>("Error unable to read purpose from manifest file");
+            report<ManifestFileFailure>(ManifestFail::PATH(tarFilePath.c_str()));
+            return -1;
+        }
 
-    // Get purpose
-    auto purposeString = Version::getValue(manifestPath.string(), "purpose");
-    if (purposeString.empty())
-    {
-        log<level::ERR>("Error unable to read purpose from manifest file");
-        report<ManifestFileFailure>(ManifestFail::PATH(tarFilePath.c_str()));
-        return -1;
-    }
+        auto purpose = Version::VersionPurpose::Unknown;
+        try
+        {
+            purpose = Version::convertVersionPurposeFromString(purposeString);
+        }
+        catch (const sdbusplus::exception::InvalidEnumString& e)
+        {
+            //log<level::ERR>("Error: Failed to convert manifest purpose to enum."
+                            " Setting to Unknown.");
+        }
 
-    auto purpose = Version::VersionPurpose::Unknown;
-    try
-    {
-        purpose = Version::convertVersionPurposeFromString(purposeString);
+        // Get version
+        auto version = Version::getValue(manifestPath.string(), "version");
+        if (version.empty())
+        {
+            log<level::ERR>("Error unable to read version from manifest file");
+            report<ManifestFileFailure>(ManifestFail::PATH(tarFilePath.c_str()));
+            return -1;
+        }
+        else 
+        {
+            // Compute id
+            auto id = Version::getId(version);
+        }
     }
-    catch (const sdbusplus::exception::InvalidEnumString& e)
-    {
-        log<level::ERR>("Error: Failed to convert manifest purpose to enum."
-                        " Setting to Unknown.");
-    }
-
-    // Compute id
-    auto id = Version::getId(version);
 
     fs::path imageDirPath = std::string{IMG_UPLOAD_DIR};
     imageDirPath /= id;
