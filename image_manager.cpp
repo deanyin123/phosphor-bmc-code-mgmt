@@ -122,7 +122,7 @@ int Manager::processImage(const std::string& tarFilePath)
     if (!fs::is_regular_file(manifestPath))
     {
         version = "20190115";
-        auto purpose = Version::VersionPurpose::Unknown;
+        purpose = Version::VersionPurpose::Unknown;
         id = "switch";
        //log<level::ERR>("Error No manifest file",
        //               entry("FILENAME=%s", tarFilePath.c_str()));
@@ -140,7 +140,7 @@ int Manager::processImage(const std::string& tarFilePath)
             return -1;
         }
 
-        auto purpose = Version::VersionPurpose::Unknown;
+        purpose = Version::VersionPurpose::Unknown;
         try
         {
             purpose = Version::convertVersionPurposeFromString(purposeString);
