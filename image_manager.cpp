@@ -59,6 +59,8 @@ struct RemovablePath
 
 int Manager::processImage(const std::string& tarFilePath)
 {
+    auto id;
+    auto version;
     if (!fs::is_regular_file(tarFilePath))
     {
         log<level::ERR>("Error tarball does not exist",
@@ -118,9 +120,9 @@ int Manager::processImage(const std::string& tarFilePath)
     //Verify the manifest file
     if (!fs::is_regular_file(manifestPath))
     {
-        auto version = "20190115"
-        auto id = "switch"
-        auto purpose = Version::VersionPurpose::Unknown
+        version = "20190115";
+        auto purpose = Version::VersionPurpose::Unknown;
+        id = "switch";
        //log<level::ERR>("Error No manifest file",
        //               entry("FILENAME=%s", tarFilePath.c_str()));
        //report<ManifestFileFailure>(ManifestFail::PATH(tarFilePath.c_str()));
@@ -145,11 +147,11 @@ int Manager::processImage(const std::string& tarFilePath)
         catch (const sdbusplus::exception::InvalidEnumString& e)
         {
             //log<level::ERR>("Error: Failed to convert manifest purpose to enum."
-                            " Setting to Unknown.");
+            //                " Setting to Unknown.");
         }
 
         // Get version
-        auto version = Version::getValue(manifestPath.string(), "version");
+        version = Version::getValue(manifestPath.string(), "version");
         if (version.empty())
         {
             log<level::ERR>("Error unable to read version from manifest file");
@@ -159,7 +161,7 @@ int Manager::processImage(const std::string& tarFilePath)
         else 
         {
             // Compute id
-            auto id = Version::getId(version);
+            id = Version::getId(version);
         }
     }
 
