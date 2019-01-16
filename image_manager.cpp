@@ -105,10 +105,10 @@ int Manager::processImage(const std::string& tarFilePath)
         waitpid(pid, &status, 0);
         if (WEXITSTATUS(status))
         {
-            log<level::ERR>("Failed to extract manifest",
-                            entry("FILENAME=%s", tarFilePath.c_str()));
-            report<UnTarFailure>(UnTarFail::PATH(tarFilePath.c_str()));
-            return -1;
+            //log<level::ERR>("Failed to extract manifest",
+            //                entry("FILENAME=%s", tarFilePath.c_str()));
+            //report<UnTarFailure>(UnTarFail::PATH(tarFilePath.c_str()));
+            //return -1;
         }
     }
     else
@@ -122,7 +122,7 @@ int Manager::processImage(const std::string& tarFilePath)
     if (!fs::is_regular_file(manifestPath))
     {
         version = "20190115";
-        id = "switch";
+        id = "20190115";
        //log<level::ERR>("Error No manifest file",
        //               entry("FILENAME=%s", tarFilePath.c_str()));
        //report<ManifestFileFailure>(ManifestFail::PATH(tarFilePath.c_str()));
