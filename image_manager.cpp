@@ -121,8 +121,8 @@ int Manager::processImage(const std::string& tarFilePath)
     //Verify the manifest file
     if (!fs::is_regular_file(manifestPath))
     {
-        version = "20190115";
-        id = "20190115";
+        version = "v1.0-20190116";
+        id = "switch";
        //log<level::ERR>("Error No manifest file",
        //               entry("FILENAME=%s", tarFilePath.c_str()));
        //report<ManifestFileFailure>(ManifestFail::PATH(tarFilePath.c_str()));
