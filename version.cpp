@@ -33,17 +33,19 @@ std::string Version::getValue(const std::string& manifestFilePath,
     std::string line;
     efile.exceptions(std::ifstream::failbit | std::ifstream::badbit |
                      std::ifstream::eofbit);
+    std::string keytype = "KeyType";
+    std::string hashtype = "HashType";
     
     key = key + "=";
     auto keySize = key.length();
 
     if (manifestFilePath.empty())
     {
-        if(0 == strcmp(key, "KeyType"))
+        if(0 == strcmp(key, keytype))
         {
             value = "OpenBMC";
         }
-        else if(0 == strcmp(key, "HashType"))
+        else if(0 == strcmp(key, hashtype))
         {
             value = "RSA-SHA256";
         }
