@@ -59,8 +59,9 @@ struct RemovablePath
 
 int Manager::processImage(const std::string& tarFilePath)
 {
-    auto id;
-    auto version;
+    std::string id;
+    std::string version;
+    std::string purpose;
     if (!fs::is_regular_file(tarFilePath))
     {
         log<level::ERR>("Error tarball does not exist",
