@@ -146,7 +146,7 @@ auto Activation::activation(Activations value) -> Activations
                 Activation::unsubscribeFromSystemdSignals();
 
                 // Remove version object from image manager
-                Activation::deleteImageManagerObject();
+                //Activation::deleteImageManagerObject();
 
                 // Create active association
                 parent.createActiveAssociation(path);
@@ -181,7 +181,7 @@ auto Activation::activation(Activations value) -> Activations
         }
 
         // Remove version object from image manager
-        Activation::deleteImageManagerObject();
+        //Activation::deleteImageManagerObject();
 
         // Create active association
         parent.createActiveAssociation(path);
