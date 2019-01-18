@@ -192,7 +192,7 @@ int Manager::processImage(const std::string& tarFilePath)
     if (versions.find(id) == versions.end())
     {
         auto versionPtr = std::make_unique<Version>(
-            bus, objPath, version, purpose, imageDirPath.string(),
+            bus, objPath, purpose, imageDirPath.string(),
             std::bind(&Manager::erase, this, std::placeholders::_1));
         versionPtr->deleteObject =
             std::make_unique<phosphor::software::manager::Delete>(bus, objPath,
